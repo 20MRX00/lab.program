@@ -1,108 +1,91 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <math.h>
+#include<stdio.h>
+#include<conio.h>
+#include<string.h>
 
-char menu() {
-    char choice;
-    printf("-----------------------\n");
-    printf("What do you want to do?\n");
-    printf("-----------------------\n");
-    printf("[A] Complete the first task \n");
-    printf("[F]  Complete the second task\n");
-    printf("[Q] Quit\n");
-    printf("-----------------------\n");
-    printf("Your choice: ");
-    while((choice = getchar()) == '\n');
-    printf("\n");
-    return choice;
-}
-double count_y(double x){
-    if (x <=-2){
-        return (1-x)/(x+1);
-    } else if (-2 < x<= 1){
-        return x+sqrt(1-x);
-    } else if(x >1){
-        return pow(x,3)+1;
-    }
-}
+char** gettxt();
+void laba(char**);
 
-double count_f(double x, double y){
-    return exp ((x-1)/y)/(x+y);
-}
-
-int main(int argc, char *argv[])
+main()
 {
-    char ans;
-    while((ans = toupper(menu())) != 'Q') {
-    if (ans == 'F') {
-        double a = -5, b =5 , h = 0.2;
 
-        printf("-----------------------------------  Part 1 ----------------------------------- \n");
+char **txt;
+int i,j;
 
-        printf("x:\t");
-        for (double x = a; x <= b; x += h) {
-            char c = x + h < b ? '\t' : '\n';
-            printf("%.3f%c", x, c);
-        }
-
-        printf("y:\t");
-        for (double x = a; x <= b; x += h) {
-            char c = x + h < b ? '\t' : '\n';
-            printf("%.3f%c", count_y(x), c);
-        }
-
-        printf("----------------------------------------------------------------------  \n");
-
-        printf("----------------------------------- Part 2 ----------------------------------- \n");
-
-        double a1= -5, b1 = 5, h1 = 0.2;
-        double c1= 1, d1 = 4, h2 = 0.3;
-        printf("y\\x\t");
-        for (double x = a1; x <= b1; x += h1) {
-            char c = x + h1 < b1 ? '\t' : '\n';
-            printf("%.3f%c", x, c);
-        }
-
-        for (double y = c1; y <= d1; y += h2) {
-            printf("%.3f\t", y);
-            for (double x = a1; x <= b1; x += h1) {
-                char c = x + h1 < b1 ? '\t' : '\n';
-                printf("%.3f%c", count_f(x, y), c);
-            }
-        }
-    }
-else if( ans == 'A'){
-      int N;
-    double x, leftX = 0, rightX = 1;
-
-    printf("Enter x, N: ");
-    if (scanf("%lf %d", &x, &N) != 2) {
-        printf("Invalid input\n");
-        return -1;
-    }
-
-    if (x < leftX || x > rightX) {
-        char* fmt = "Incorrect %.4f. Need from [%.4f, %.4f]\n";
-        printf(fmt, x, leftX, rightX);
-        return -1;
-    }
- double a = 1, S = a;
-
-    for (int n = 0; n <= N; ++n) {
-        double q = cos(n+1*x/ n)/4*n+4;
-        a *= q;
-        S += a;
-    }
-
-    //Calc result
-    S = - S;
-    double y = cos (x);
-    printf("S=%.7f\n", S);
-    printf("y=%.7f\n", y);
-    double eps = fabs(y-S)/fabs(S)*100;
-    printf("e=%.2f%%\n", eps);
-        }
-
+printf("Programma pods4itivaet kolli4estvo vhozhdeniy kazhdogo slova v text\n(slovom s4itetsia gruppa simvolov ograni4ennih 1 ili neskolkimi probelami)");
+printf("\nVvedite text:\n");
+txt=gettxt();
+laba(txt);
+getch();
 }
-return 0;
+
+char** gettxt()
+{
+char **txt, buf[128]="A";
+int i=0,n,cht=1;
+txt=(char**)malloc(sizeof(char*));
+ while(strlen(buf)!=0)
+ {
+
+ gets(buf);
+ n=strlen(buf);
+ txt[i]=(char*)malloc((n+1)*sizeof(char));
+ strcpy(txt[i],buf);
+ txt=(char**)realloc(txt,(++cht)*sizeof(char*));
+ i++;
+ }
+ txt[i]=NULL;
+return txt;
+}
+
+void laba(char **txt)
+{
+int i=0;
+char **words;
+char *pch;
+int slov=0;
+int y,kol;
+char* buf;
+words=(char**)malloc(sizeof(char*));
+words[0]=NULL;
+ while(*(txt+i))
+ {
+ pch=strtok(*(txt+i)," ,.-");
+  while (pch!=NULL)
+  {
+  words=(char**)realloc(words,(slov+1)*sizeof(char*));
+  words[slov]=(char*)malloc((strlen(pch)+1)*sizeof(char));
+  words[slov]=pch;
+  pch = strtok(NULL, " ,.-");
+  ++slov;
+  words[slov]=NULL;
+  }
+ ++i;
+ }
+
+ buf=(char*)malloc(sizeof(char));
+ for(i=0;i<=slov;++i)
+ {
+ if(words[i]==NULL) continue;
+  {
+  buf=(char*)realloc(buf,(strlen(words[i])+1)*sizeof(char));
+  strcpy(buf,words[i]);
+  kol=0;
+   for(y=0;y<=slov;++y)
+   {
+    if(words[y]==NULL) continue;
+    if(strcmp(buf,words[y])==0)
+    {
+    kol++;
+    words[y]=NULL;
+    }
+   }
+  if((buf)!=1) printf("slovo='%s' vstretilos' %d raz\n",buf,kol);
+  }
+ }
+for(int z=0;z<=slov;++z)
+{
+free(words[z]);
+}
+free(words);
+free(buf);
 }
